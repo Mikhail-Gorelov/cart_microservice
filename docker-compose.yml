@@ -4,15 +4,16 @@ x-variables: &variables
   ENV_STAGE: local
 
 services:
-  web:
+  cart:
     build:
       context: .
       dockerfile: docker/dev/web/Dockerfile
     volumes:
       - ./web/:/usr/src/web/:cached
+      - redis_socket:/redis_socket
       - postgres_socket:/postgres_socket
     ports:
-      - "8000:8000"
+      - "8011:8000"
     environment:
       <<: *variables
     env_file:
@@ -49,10 +50,13 @@ services:
       timeout: 5s
       retries: 5
   redis:
-    image: redis:6.0.6-alpine
+    build:
+      context: .
+      dockerfile: ./docker/dev/redis/Dockerfile
     restart: unless-stopped
     volumes:
       - redis_data:/data
+      - redis_socket:/redis_socket
     networks:
       - separated_network
     logging:
@@ -82,12 +86,13 @@ services:
     networks:
       - separated_network
     extra_hosts:
-      - "gateway-host:172.17.0.1"
+      - "docker-gateway-host:172.17.0.1"
 
 volumes:
   postgres_data:
   postgres_socket:
   redis_data:
+  redis_socket:
 
 networks:
   microservice_network:

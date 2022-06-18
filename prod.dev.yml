@@ -5,7 +5,7 @@ x-variables: &variables
   USE_HTTPS: 0
 
 services:
-  web:
+  cart:
     ports:
       - "9000:8000"
     environment:
