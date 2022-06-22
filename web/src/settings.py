@@ -64,6 +64,7 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'main.apps.MainConfig',
+    'cart.apps.CartConfig',
 ]
 
 INSTALLED_APPS += THIRD_PARTY_APPS + LOCAL_APPS
