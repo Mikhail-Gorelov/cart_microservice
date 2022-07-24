@@ -5,6 +5,7 @@ from django.db import models
 
 class Cart(models.Model):
     user_id = models.PositiveIntegerField()
+    session_id = models.CharField(max_length=77)
 
 
 class Item(models.Model):
@@ -13,3 +14,7 @@ class Item(models.Model):
     quantity = models.PositiveSmallIntegerField()
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    product_variant_id = models.PositiveIntegerField(null=True)
+
+    class Meta:
+        ordering = ('-created',)

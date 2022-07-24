@@ -44,3 +44,9 @@ django-microservice-request==0.5.1
 
 # JsonValidator
 jsonschema==4.5.1
+
+# Measurement fields
+django-measurement==3.2.4
+
+# Prices fields
+django-prices==2.2.0
