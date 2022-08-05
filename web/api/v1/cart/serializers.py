@@ -6,13 +6,9 @@ from cart import models
 
 
 class ItemSerializer(serializers.Serializer):
-    product_id = serializers.IntegerField()
-    quantity = serializers.IntegerField()
-
-    def validate(self, attrs):
-        if attrs.get('product_id') < 1 or attrs.get('quantity') < 1:
-            raise serializers.ValidationError('The value must be positive')
-        return attrs
+    product_id = serializers.IntegerField(min_value=1)
+    quantity = serializers.IntegerField(min_value=1)
+    product_variant_id = serializers.IntegerField(min_value=1)
 
 
 class CartShowSerializer(serializers.Serializer):

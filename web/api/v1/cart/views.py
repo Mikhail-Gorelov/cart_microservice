@@ -7,6 +7,8 @@ from cart import models
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from ..order.services import OrderHandler
+
 logger = logging.getLogger(__name__)
 
 
@@ -35,11 +37,11 @@ class ItemAddView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
 
         if self.request.user.is_authenticated:
-            user = self.request.user.pk
+            user_id = self.request.user.pk
         else:
-            user = self.request.headers.get('Remote-User')
+            user_id = self.request.headers.get('Remote-User')
 
-        cart = models.Cart.objects.get(user_id=user)
+        cart = models.Cart.objects.get(user_id=user_id)
         models.Item.objects.create(cart=cart, **serializer.data)
         return Response(serializer.data)
 

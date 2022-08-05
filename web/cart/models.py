@@ -4,8 +4,8 @@ from django.db import models
 # Create your models here.
 
 class Cart(models.Model):
-    user_id = models.PositiveIntegerField()
-    session_id = models.CharField(max_length=77)
+    user_id = models.PositiveIntegerField(null=True, unique=True)
+    session_id = models.CharField(max_length=77, null=True, unique=True)
 
 
 class Item(models.Model):
