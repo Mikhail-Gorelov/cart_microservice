@@ -1,13 +1,10 @@
 import logging
 
-from rest_framework.permissions import AllowAny
-
-from . import serializers
-from cart import models
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from ..order.services import OrderHandler
+from cart import models
+from . import serializers
 
 logger = logging.getLogger(__name__)
 
@@ -16,15 +13,11 @@ logger = logging.getLogger(__name__)
 
 class CartAddView(GenericAPIView):
     def post(self, request, *args, **kwargs):
-        if self.request.user.is_authenticated:
-            user = self.request.user.pk
-        else:
-            user = self.request.headers.get('Remote-User')
-
+        user_id = self.request.user.pk
         try:
-            obj = models.Cart.objects.get(user_id=user)
+            obj = models.Cart.objects.get(user_id=user_id)
         except models.Cart.DoesNotExist:
-            obj = models.Cart(user_id=user)
+            obj = models.Cart(user_id=user_id)
             obj.save()
         return Response({'cart_id': obj.pk})
 
@@ -35,24 +28,16 @@ class ItemAddView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        if self.request.user.is_authenticated:
-            user_id = self.request.user.pk
-        else:
-            user_id = self.request.headers.get('Remote-User')
-
+        user_id = self.request.user.pk
         cart = models.Cart.objects.get(user_id=user_id)
         models.Item.objects.create(cart=cart, **serializer.data)
         return Response(serializer.data)
+
 
 class CartShowView(GenericAPIView):
     serializer_class = serializers.CartShowSerializer
 
     def get_queryset(self):
-        user_id: int | None = self.request.user.pk if self.request.user.is_authenticated else self.request.headers.get('Remote-User')
-
-        if user_id:
-            return models.Item.objects.filter(cart__user_id=user_id)
-        else:
-            # self.request.session
-            return models.Item.objects.filter(cart__session_id=user_id)
+        user_id = self.request.user.pk
+        return models.Item.objects.filter(cart__user_id=user_id) if user_id else models.Item.objects.filter(
+            cart__session_id=user_id)

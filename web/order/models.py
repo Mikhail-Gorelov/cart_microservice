@@ -1,10 +1,8 @@
 from uuid import uuid4
-
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models, connection
-
-# Create your models here.
+from typing import NamedTuple
 from order.choices import OrderStatus
 
 
@@ -24,6 +22,7 @@ class Order(models.Model):
         max_length=32, default=OrderStatus.UNFULFILLED, choices=OrderStatus.CHOICES
     )
     user_id = models.PositiveIntegerField(null=True, blank=True)
+    session_id = models.CharField(max_length=200, null=True, blank=True)
     billing_address_id = models.PositiveIntegerField(null=True, blank=True)
     shipping_address_id = models.PositiveIntegerField(null=True, blank=True)
     user_email = models.EmailField(blank=True, default="")
