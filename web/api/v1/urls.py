@@ -4,4 +4,5 @@ app_name = 'v1'
 
 urlpatterns = [
     path('', include('api.v1.cart.urls')),
+    path('', include('api.v1.order.urls')),
 ]

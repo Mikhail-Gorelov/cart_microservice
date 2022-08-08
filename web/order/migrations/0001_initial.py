@@ -32,6 +32,15 @@ class Migration(migrations.Migration):
                 ('customer_note', models.TextField(blank=True, default='')),
             ],
         ),
+        # define auto incrementing for order number field
+        migrations.RunSQL(
+            """
+            CREATE SEQUENCE order_order_number_seq OWNED BY order_order.number;
+
+            SELECT setval('order_order_number_seq', coalesce(max(number), 0) + 1, false)
+            FROM order_order;
+        """
+        ),
         migrations.CreateModel(
             name='OrderLine',
             fields=[

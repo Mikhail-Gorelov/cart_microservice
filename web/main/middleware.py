@@ -43,5 +43,4 @@ class RemoteUserMiddleware:
             request.remote_user = RemoteUser(id=request.user.pk, session=request.session.session_key)
         if user_id := request.headers.get('Remote-User'):
             request.remote_user = RemoteUser(id=int(user_id), session=request.session.session_key)
-        # print(request.session.session_key, request.remote_user.session)
         return self.get_response(request)

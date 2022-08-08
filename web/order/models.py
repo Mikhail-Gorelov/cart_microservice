@@ -48,3 +48,13 @@ class OrderLine(models.Model):
     currency = models.CharField(
         max_length=settings.DEFAULT_CURRENCY_CODE_LENGTH,
     )
+
+
+class OrderLineData(NamedTuple):
+    order: Order
+    product_variant_id: int
+    product_name: str
+    variant_name: str
+    product_sku: str
+    quantity: int
+    currency: str

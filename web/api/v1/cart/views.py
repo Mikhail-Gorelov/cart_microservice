@@ -5,6 +5,7 @@ from rest_framework.response import Response
 
 from cart import models
 from . import serializers
+from .services import CartHandler
 
 logger = logging.getLogger(__name__)
 
@@ -38,6 +39,9 @@ class CartShowView(GenericAPIView):
     serializer_class = serializers.CartShowSerializer
 
     def get_queryset(self):
-        user_id = self.request.user.pk
-        return models.Item.objects.filter(cart__user_id=user_id) if user_id else models.Item.objects.filter(
-            cart__session_id=user_id)
+        handler = CartHandler(remote_user=self.request.remote_user)
+        return handler.cart_show_queryset()
+
+    def get(self, request):
+        serializer = self.get_serializer(self.get_queryset(), many=True)
+        return Response(serializer.data)

@@ -15,13 +15,15 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 
 
-class ItemAddView(GenericAPIView):
-    serializer_class = serializers.ItemSerializer
+class ItemOrderAddView(GenericAPIView):
+    serializer_class = serializers.ItemOrderSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         handler = OrderHandler(remote_user=request.remote_user)
+        channel_cookie = request.COOKIES
         handler.add_to_order(product_variant_id=serializer.data['product_variant_id'],
-                             quantity=serializer.data['quantity'])
+                             quantity=serializer.data['quantity'],
+                             currency=channel_cookie.get('currency_code'))
         return Response(serializer.data)
