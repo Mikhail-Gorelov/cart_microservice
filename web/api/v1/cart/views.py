@@ -39,7 +39,7 @@ class CartShowView(GenericAPIView):
     serializer_class = serializers.CartShowSerializer
 
     def get_queryset(self):
-        handler = CartHandler(remote_user=self.request.remote_user)
+        handler = CartHandler(remote_user=self.request.user)
         return handler.cart_show_queryset()
 
     def get(self, request):

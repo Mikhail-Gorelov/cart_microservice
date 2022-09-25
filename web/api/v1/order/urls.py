@@ -9,6 +9,7 @@ router = DefaultRouter()
 
 urlpatterns = [
     path('item-order/add/', views.ItemOrderAddView.as_view(), name='item-order-add'),
+    path('item-order/show/draft/', views.ItemOrderShowDraftView.as_view(), name='item-order-show-draft'),
 ]
 
 urlpatterns += router.urls

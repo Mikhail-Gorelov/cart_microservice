@@ -19,7 +19,7 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     status = models.CharField(
-        max_length=32, default=OrderStatus.UNFULFILLED, choices=OrderStatus.CHOICES
+        max_length=32, default=OrderStatus.DRAFT, choices=OrderStatus.CHOICES
     )
     user_id = models.PositiveIntegerField(null=True, blank=True)
     session_id = models.CharField(max_length=200, null=True, blank=True)

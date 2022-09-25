@@ -15,14 +15,18 @@ class OrderHandler:
         order = self._get_or_create_order()
         service = ProductServiceRequest(url=f'/api/v1/product-variant/{product_variant_id}/')
         response = service.service_response(method="get")
-        orderline_data = OrderLineData(order=order[0], product_variant_id=product_variant_id,
-                                       product_name=response.data['product_name'],
-                                       variant_name=response.data['variant_name'],
-                                       product_sku=response.data['product_sku'],
-                                       quantity=quantity, currency=currency)
+        orderline_data = OrderLineData(
+            order=order[0],
+            product_variant_id=product_variant_id,
+            product_name=response.data['product_name'],
+            variant_name=response.data['variant_name'],
+            product_sku=response.data['product_sku'],
+            quantity=quantity,
+            currency=currency
+        )
         return OrderLine.objects.get_or_create(**orderline_data._asdict())
 
-    def _get_or_create_order(self) -> Order:
+    def _get_or_create_order(self) -> tuple[Order, bool]:
         return Order.objects.get_or_create(user_id=self.remote_user.id, status=OrderStatus.DRAFT, channel_id=1)
 
 
