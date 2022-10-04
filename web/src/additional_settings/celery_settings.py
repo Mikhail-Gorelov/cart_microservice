@@ -30,7 +30,7 @@ generic_exchange = Exchange('generic', type='topic')  # topic, fanout
 
 CELERY_TASK_ROUTES = {
     '*': {'queue': 'celery'},
-    'update_prices': {'queue': 'update_price'},
+    'update_prices': {'queue': 'update_prices_cart'},
 }
 
 CELERY_TASK_QUEUES = (
@@ -40,7 +40,7 @@ CELERY_TASK_QUEUES = (
         queue_arguments={'x-queue-mode': 'lazy'},
     ),
     Queue(
-        name='update_price',
+        name='update_prices_cart',
         exchange=generic_exchange,
         queue_arguments={'x-queue-mode': 'lazy'},
     ),
