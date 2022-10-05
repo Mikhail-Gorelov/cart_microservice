@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 class CartAddView(GenericAPIView):
     def post(self, request, *args, **kwargs):
-        user_id = self.request.user.pk
+        user_id = self.request.remote_user.id
         try:
             obj = models.Cart.objects.get(user_id=user_id)
         except models.Cart.DoesNotExist:
@@ -29,7 +29,7 @@ class ItemAddView(GenericAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user_id = self.request.user.pk
+        user_id = self.request.remote_user.id
         cart = models.Cart.objects.get(user_id=user_id)
         models.Item.objects.create(cart=cart, **serializer.data)
         return Response(serializer.data)
@@ -39,7 +39,7 @@ class CartShowView(GenericAPIView):
     serializer_class = serializers.CartShowSerializer
 
     def get_queryset(self):
-        handler = CartHandler(remote_user=self.request.user)
+        handler = CartHandler(remote_user=self.request.remote_user)
         return handler.cart_show_queryset()
 
     def get(self, request):
