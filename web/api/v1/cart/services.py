@@ -16,6 +16,6 @@ class CartHandler:
         return models.Item.objects.filter(cart__session_id=user_id)
 
 
-class CartService(MicroServiceConnect):
+class ProductsService(MicroServiceConnect):
     api_key = settings.PRODUCTS_API_KEY
     service = settings.PRODUCTS_API_URL

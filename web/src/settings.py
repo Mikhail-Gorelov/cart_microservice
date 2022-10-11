@@ -188,8 +188,8 @@ LOCALE_PATHS = (os.path.join(BASE_DIR, 'locale'),)
 
 LANGUAGES = (('en', _('English')),)
 
-SESSION_COOKIE_NAME = 'sessionid'
-CSRF_COOKIE_NAME = 'csrftoken'
+SESSION_COOKIE_NAME = 'sessionid_cart'
+CSRF_COOKIE_NAME = 'csrftoken_cart'
 
 ROSETTA_SHOW_AT_ADMIN_PANEL = DEBUG
 
