@@ -39,3 +39,7 @@ class ItemOrderShowDraftView(GenericAPIView):
         instance = self.get_queryset().get(user_id=self.request.remote_user.id)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
+
+
+class CheckoutView(GenericAPIView):
+    pass

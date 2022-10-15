@@ -10,6 +10,7 @@ router = DefaultRouter()
 urlpatterns = [
     path('cart/add/', views.CartAddView.as_view(), name='cart-add'),
     path('item/add/', views.ItemAddView.as_view(), name='item-add'),
+    path('item/delete/', views.ItemDeleteView.as_view(), name='item-delete'),
     path('cart/show/', views.CartShowView.as_view(), name='cart-show'),
     path('cart/total/', views.CartTotalView.as_view(), name='cart-total'),
 ]

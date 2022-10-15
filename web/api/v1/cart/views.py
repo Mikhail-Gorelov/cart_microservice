@@ -35,6 +35,19 @@ class ItemAddView(GenericAPIView):
         return Response(serializer.data)
 
 
+class ItemDeleteView(GenericAPIView):
+    serializer_class = serializers.ItemDeleteSerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_id = self.request.remote_user.id
+        cart = models.Cart.objects.get(user_id=user_id)
+        item = models.Item.objects.get(cart=cart, **serializer.data)
+        item.delete()
+        return Response(serializer.data)
+
+
 class CartShowView(GenericAPIView):
     serializer_class = serializers.CartShowSerializer
 
