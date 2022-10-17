@@ -1,8 +1,8 @@
 from django.db.models import Sum
+from oauthlib.common import urldecode
 from rest_framework import serializers
 
 from api.v1.cart.services import ProductsService
-from cart import models
 
 
 # Create your serializers here.
@@ -37,18 +37,35 @@ class CartTotalSerializer(serializers.Serializer):
     total_sum = serializers.SerializerMethodField()
     items_number = serializers.SerializerMethodField()
     total_weight = serializers.SerializerMethodField()
+    currency = serializers.SerializerMethodField()
 
     def get_total_sum(self, obj):
-        variant_ids = [i[0] for i in list(obj.items.all().values_list('product_variant_id'))]
+        variant_ids = list(obj.items.all().values_list('product_variant_id', flat=True))
         service = ProductsService(request=self.context['request'], url=f"/api/v1/total-sum/")
         response = service.service_response(method="post", data={'variant_ids': variant_ids})
-        return response.data.get('total_sum')
+        items_dict = dict(obj.items.all().values_list('product_variant_id', 'quantity'))
+        multiplied_dict = {}
+        for k, v in response.data.items():
+            multiplied_dict[k] = v * items_dict[int(k)]
+        return sum(multiplied_dict.values())
 
     def get_items_number(self, obj):
-        return obj.items.all().count()
+        return obj.items.all().aggregate(Sum('quantity')).get('quantity__sum')
 
     def get_total_weight(self, obj):
-        variant_ids = [i[0] for i in list(obj.items.all().values_list('product_variant_id'))]
+        variant_ids = list(obj.items.all().values_list('product_variant_id', flat=True))
+        quantity = list(obj.items.all().values_list('quantity', flat=True))
+        output_list = []
+        for index, value in enumerate(variant_ids):
+            output_list.append({
+                'variant_id': value,
+                'quantity': quantity[index]
+            })
         service = ProductsService(request=self.context['request'], url=f"/api/v1/total-weight/")
-        response = service.service_response(method="post", data={'variant_ids': variant_ids})
+        response = service.service_response(method="post", json=output_list)
         return response.data.get('total_weight')
+
+    def get_currency(self, obj):
+        if reg_country := dict(urldecode(self.context['request'].COOKIES.get('reg_country'))):
+            return reg_country.get('currency_code')
+        return None

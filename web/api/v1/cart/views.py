@@ -69,4 +69,4 @@ class CartTotalView(GenericAPIView):
 
     def get(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
-        return Response(serializer.data)
+        return Response(serializer.data[0])
