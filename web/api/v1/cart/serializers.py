@@ -17,6 +17,15 @@ class ItemDeleteSerializer(serializers.Serializer):
     product_variant_id = serializers.IntegerField(min_value=1)
 
 
+class ItemChangeQuantitySerializer(serializers.Serializer):
+    product_variant_id = serializers.IntegerField(min_value=1)
+    quantity = serializers.IntegerField()
+
+
+class ItemShowQuantitySerializer(serializers.Serializer):
+    product_variant_id = serializers.IntegerField(min_value=1)
+
+
 class CartShowSerializer(serializers.Serializer):
     product_variant_id = serializers.SerializerMethodField()
     quantity = serializers.IntegerField()

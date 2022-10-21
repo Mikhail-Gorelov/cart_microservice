@@ -44,8 +44,35 @@ class ItemDeleteView(GenericAPIView):
         user_id = self.request.remote_user.id
         cart = models.Cart.objects.get(user_id=user_id)
         item = models.Item.objects.get(cart=cart, **serializer.data)
+        # item = models.Item.objects.filter(cart=cart, **serializer.data)
         item.delete()
         return Response(serializer.data)
+
+
+class ItemChangeQuantityView(GenericAPIView):
+    serializer_class = serializers.ItemChangeQuantitySerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_id = self.request.remote_user.id
+        cart = models.Cart.objects.get(user_id=user_id)
+        item = models.Item.objects.get(cart=cart, product_variant_id=serializer.data.get('product_variant_id'))
+        item.quantity = serializer.data.get('quantity')
+        item.save(update_fields=['quantity'])
+        return Response({'item': item.id})
+
+
+class ItemShowQuantityView(GenericAPIView):
+    serializer_class = serializers.ItemShowQuantitySerializer
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user_id = self.request.remote_user.id
+        cart = models.Cart.objects.get(user_id=user_id)
+        item = models.Item.objects.get(cart=cart, product_variant_id=serializer.data.get('product_variant_id'))
+        return Response({'quantity': item.quantity})
 
 
 class CartShowView(GenericAPIView):
@@ -58,6 +85,15 @@ class CartShowView(GenericAPIView):
     def get(self, request):
         serializer = self.get_serializer(self.get_queryset(), many=True)
         return Response(serializer.data)
+
+
+class CartCheckoutView(GenericAPIView):
+
+    def get(self, request):
+        cart = CartHandler(remote_user=request.remote_user)
+        queryset = cart.cart_show_queryset()
+        print(list(queryset.values('product_variant_id', 'quantity')))
+        return Response({})
 
 
 class CartTotalView(GenericAPIView):
