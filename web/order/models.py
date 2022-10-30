@@ -31,6 +31,7 @@ class Order(models.Model):
     )
     channel_id = models.PositiveIntegerField()
     customer_note = models.TextField(blank=True, default="")
+    total_sum = models.DecimalField(max_digits=8, decimal_places=2)
 
 
 class OrderLine(models.Model):
@@ -42,12 +43,10 @@ class OrderLine(models.Model):
     variant_name = models.CharField(max_length=255, default="", blank=True)
     product_sku = models.CharField(max_length=255, null=True, blank=True)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
-    quantity_fulfilled = models.IntegerField(
-        validators=[MinValueValidator(0)], default=0
-    )
     currency = models.CharField(
         max_length=settings.DEFAULT_CURRENCY_CODE_LENGTH,
     )
+    price = models.DecimalField(max_digits=8, decimal_places=2)
 
 
 class OrderLineData(NamedTuple):

@@ -1,5 +1,5 @@
 from django.db.models import Sum
-from oauthlib.common import urldecode
+from urllib.parse import parse_qsl
 from rest_framework import serializers
 
 from api.v1.cart.services import ProductsService
@@ -75,6 +75,6 @@ class CartTotalSerializer(serializers.Serializer):
         return response.data.get('total_weight')
 
     def get_currency(self, obj):
-        if reg_country := dict(urldecode(self.context['request'].COOKIES.get('reg_country'))):
+        if reg_country := dict(parse_qsl(self.context['request'].COOKIES.get('reg_country'))):
             return reg_country.get('currency_code')
         return None

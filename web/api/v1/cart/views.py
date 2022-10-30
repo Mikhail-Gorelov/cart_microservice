@@ -1,11 +1,13 @@
 import logging
 
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from cart import models
 from . import serializers
-from .services import CartHandler
+from .services import CartHandler, ProductsService
 
 logger = logging.getLogger(__name__)
 
@@ -92,8 +94,11 @@ class CartCheckoutView(GenericAPIView):
     def get(self, request):
         cart = CartHandler(remote_user=request.remote_user)
         queryset = cart.cart_show_queryset()
-        print(list(queryset.values('product_variant_id', 'quantity')))
-        return Response({})
+        service = ProductsService(request=request, url=f"/api/v1/product/checkout/")
+        response = service.service_response(
+            method="post", json=list(queryset.values('id', 'product_variant_id', 'quantity'))
+        )
+        return Response(response.data)
 
 
 class CartTotalView(GenericAPIView):

@@ -1,6 +1,6 @@
 import logging
 
-from oauthlib.common import urldecode
+from urllib.parse import parse_qsl
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
@@ -22,7 +22,7 @@ class ItemOrderAddView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         handler = OrderHandler(remote_user=self.request.remote_user)
-        reg_country = dict(urldecode(request.COOKIES.get('reg_country')))
+        reg_country = dict(parse_qsl(request.COOKIES.get('reg_country')))
         handler.add_to_order(product_variant_id=serializer.data['product_variant_id'],
                              quantity=serializer.data['quantity'],
                              currency=reg_country.get('currency_code'))
@@ -41,5 +41,8 @@ class ItemOrderShowDraftView(GenericAPIView):
         return Response(serializer.data)
 
 
-class CheckoutView(GenericAPIView):
-    pass
+class OrdersView(GenericAPIView):
+    serializer_class = serializers.OrderSerializer
+
+    def get(self, request):
+        pass

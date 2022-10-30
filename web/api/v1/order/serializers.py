@@ -23,3 +23,26 @@ class DraftOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Order
         fields = ('id', 'created', 'updated_at', 'lines')
+
+
+class OrderLineSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OrderLine
+        fields = (
+            'id',
+            'product_variant_id',
+            'product_name',
+            'variant_name',
+            'product_sku',
+            'quantity',
+            'currency',
+            'price'
+        )
+
+
+class OrderSerializer(serializers.ModelSerializer):
+    lines = OrderLineSerializer(many=True)
+
+    class Meta:
+        model = Order
+        fields = ('id', 'number', 'created', 'updated_at', 'status', 'currency', 'total_sum')
