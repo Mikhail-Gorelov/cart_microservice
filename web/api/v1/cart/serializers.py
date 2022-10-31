@@ -75,6 +75,4 @@ class CartTotalSerializer(serializers.Serializer):
         return response.data.get('total_weight')
 
     def get_currency(self, obj):
-        if reg_country := dict(parse_qsl(self.context['request'].COOKIES.get('reg_country'))):
-            return reg_country.get('currency_code')
-        return None
+        return self.context['request'].channel.currency_code

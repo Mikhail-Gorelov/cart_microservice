@@ -22,10 +22,10 @@ class ItemOrderAddView(GenericAPIView):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         handler = OrderHandler(remote_user=self.request.remote_user)
-        reg_country = dict(parse_qsl(request.COOKIES.get('reg_country')))
         handler.add_to_order(product_variant_id=serializer.data['product_variant_id'],
                              quantity=serializer.data['quantity'],
-                             currency=reg_country.get('currency_code'))
+                             currency=request.channel.currency_code,
+                             )
         return Response(serializer.data)
 
 
